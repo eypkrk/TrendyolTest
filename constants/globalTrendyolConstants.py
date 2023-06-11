@@ -1,0 +1,1 @@
+URL = "https://www.trendyol.com/"
