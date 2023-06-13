@@ -6,14 +6,17 @@ from selenium.webdriver.support import expected_conditions as ec
 from constants import globalTrendyolConstants
 from time import sleep
 from selenium.webdriver.common.action_chains import ActionChains
+from datetime import date
+from pathlib import Path
 
 class TestTrendyol:
     def setup_method(self):
         self.driver = webdriver.Chrome(ChromeDriverManager().install())
         self.driver.maximize_window()
         self.driver.get(globalTrendyolConstants.URL)
-        
-        
+        self.folderpath = str(date.today())
+        Path(self.folderpath).mkdir(exist_ok=True)
+            
 
     def teardown_method(self):
         self.driver.quit()
@@ -33,26 +36,53 @@ class TestTrendyol:
         actions = ActionChains(self.driver)
         actions.move_to_element(btnOn).perform()
         self.waitMethod((By.XPATH,"//*[@id='navigation-wrapper']/nav/ul/li[2]/a"))
-        
-
-    def test_buttonsOfWomans(self):
+    
+    def crossAdvert(self):   
         btnCross = self.driver.find_element(By.ID,"Combined-Shape")
         btnCross.click()
+
+    def test_buttonsOfWomans(self):
+        self.crossAdvert()
         for i in range(13):
             i += 1
             self.btnOfWoman()
             btnLink = self.driver.find_element(By.XPATH,f"//*[@id='sub-nav-1']/div/div/div[1]/div/ul/li[{i}]/a")
             btnLink.click()
+            self.driver.save_screenshot(f"{self.folderpath}/{i}woman.png")
+        self.waitMethod((By.XPATH,"//*[@id='search-app']/div/div[1]/div[2]/div[1]/div[2]/div/div/div"))
+        btnSort = self.driver.find_element(By.XPATH,"//div[@id='search-app']/div/div/div[2]/div/div[2]/div/div/div")
+        btnSort.click()
+        btnMin = self.driver.find_element(By.XPATH,"//div[@id='search-app']/div/div/div[2]/div/div[2]/div/ul/li[2]")
+        btnMin.click()
+        self.driver.save_screenshot(f"{self.folderpath}/{i}womanorder.png")
+
     def test_buttonsOfMan(self):
-        btnCross = self.driver.find_element(By.ID,"Combined-Shape")
-        btnCross.click()
+        self.crossAdvert()
         for j in range(1,14):
             self.btnOfMan()
             self.waitMethod((By.XPATH,f"//*[@id='sub-nav-2']/div/div/div[1]/div/ul/li[{j}]"))
             btnLink1 = self.driver.find_element(By.XPATH,f"//*[@id='sub-nav-2']/div/div/div[1]/div/ul/li[{j}]/a")
             btnLink1.click()
-        btnSort = self.driver.find_element(By.XPATH,"//div[@id='search-app']/div/div/div[2]/div/div[2]/div/div/div")
-        btnSort.click()
-        btnMin = self.driver.find_element(By.XPATH,"//div[@id='search-app']/div/div/div[2]/div/div[2]/div/ul/li[2]")
-        btnMin.click()
-
+            self.driver.save_screenshot(f"{self.folderpath}/{j}man.png")
+    
+    def test_filter(self):
+        self.crossAdvert()
+        btnOn = self.driver.find_element(By.XPATH,"//*[@id='navigation-wrapper']/nav/ul/li[3]/a")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(btnOn).perform()
+        self.waitMethod((By.XPATH,"//*[@id='sub-nav-3']/div/div/div[1]/div/ul/li[1]/a"))
+        btnLink = self.driver.find_element(By.XPATH,"//*[@id='sub-nav-3']/div/div/div[1]/div/ul/li[1]/a")
+        btnLink.click()
+        txtArea = self.driver.find_element(By.XPATH,"//*[@id='sticky-aggregations']/div/div[2]/div[2]/input")
+        txtArea.send_keys("Civil Baby")
+        btnFilter = self.driver.find_element(By.XPATH,"//*[@id='sticky-aggregations']/div/div[2]/div[3]/div/div/div/div/a")
+        btnFilter.click()
+        self.driver.save_screenshot(f"{self.folderpath}/1.png")
+        sleep(2)
+        btnSize = self.driver.find_element(By.XPATH,"//*[@id='sticky-aggregations']/div/div[3]/div[3]/div/div/div[5]/div/a")
+        btnSize.click()
+        actions.move_to_element(btnSize).perform()
+        sleep(2)
+        self.driver.save_screenshot(f"{self.folderpath}/2.png")
+        
+        
