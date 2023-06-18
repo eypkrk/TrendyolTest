@@ -180,7 +180,24 @@ class TestTrendyol:
         btnLogin.click()
         errorMsg = self.driver.find_element(By.ID,"error-box-wrapper")
         assert errorMsg.text == "Lütfen geçerli bir e-posta adresi giriniz."
-       
+        btnForget = self.driver.find_element(By.XPATH,"//div[@id='login-register']/div[3]/div[2]/form/div[3]/a/span")
+        btnForget.click()
+        self.driver.save_screenshot(f"{self.folderpath}/{username}-14.png")
+        self.waitMethod((By.XPATH,"//*[@id='change-password-container']/form/button[1]"))
+        btnRfr = self.driver.find_element(By.XPATH,"//*[@id='change-password-container']/form/button[1]")
+        btnRfr.click()
+        self.driver.save_screenshot(f"{self.folderpath}/{username}-15.png")
+        self.waitMethod((By.XPATH,"//*[@id='change-password-container']/form/div/div/span[1]"))
+        errMsg = self.driver.find_element(By.XPATH,"//*[@id='change-password-container']/form/div/div/span[1]")
+        assert errMsg.text == 'E-posta adresinizi giriniz.'
+        btnBack = self.driver.find_element(By.XPATH,"//*[@id='change-password-container']/form/button[2]")
+        btnBack.click()
+        self.driver.save_screenshot(f"{self.folderpath}/{username}-16.png")
+        sleep(5)
+        self.waitMethod((By.XPATH,"//*[@id='login-register']/div[2]/div/button[2]"))
+        btnSignUp = self.driver.find_element(By.XPATH,"//*[@id='login-register']/div[2]/div/button[2]")
+        btnSignUp.click()
+        self.driver.save_screenshot(f"{self.folderpath}/-17.png")
         
         
         
